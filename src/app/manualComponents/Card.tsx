@@ -23,11 +23,14 @@ const Card: React.FC<infoCardsProps> = ({
 
   console.log(cards);
   return (
-    <div className="flex flex-wrap">
-      {cards?.map((card: any) => {
+    <div className="flex flex-wrap gap-6 px-4 py-6">
+      {cards?.map((card: any, index: number) => {
         return (
-          <div className="w-[300px] h-38 border-2 border-black rounded-sm p-3">
-            {card}
+          <div
+            key={index}
+            className=" justify-between bg-white shadow-lg rounded-lg border border-gray-300 p-5 w-[300px]"
+          >
+            <p className="text-lg font-semibold text-gray-800 mb-4">{card}</p>
           </div>
         );
       })}

@@ -13,9 +13,10 @@ export default function Home() {
     <div className="flex h-screen">
       <Sidebar setPage={setPage} />
       <div className="flex flex-col">
-        <h1 className=" text-3xl font-bold mb-6 mt-5">
+        <h1 className="text-5xl ml-4 font-extrabold text-neutral-800 drop-shadow-md mb-8">
           Welcome to Your Dashboard
         </h1>
+
         {page[0] === "" ? "" : <Terminal terminal={page} />}
       </div>
     </div>

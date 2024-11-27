@@ -19,18 +19,21 @@ const Terminal: React.FC<TerminalProps> = ({ terminal }) => {
   const calcul = findIndexTerminal ? findIndexTerminal[0] : "0";
   console.log(terminal[0], calcul);
   return (
-    <div>
-      <p>Bienvenue dans le {replaceName}</p>
-      <div className="gap-3 flex">
-        <Card
-          infosCards={terminal[1]}
-          indexCards={parseInt(calcul ? calcul : "0")}
-          terminalName={terminal[0]}
-        />
+    <div className="flex gap-6">
+      <div className="flex flex-col">
+        <h2 className="ml-4 font-bold">You are now on the {replaceName}</h2>
+        <div className="flex-1 gap-6">
+          <Card
+            infosCards={terminal[1]}
+            indexCards={parseInt(calcul ? calcul : "0")}
+            terminalName={terminal[0]}
+          />
+        </div>
       </div>
-      <div className="flex items-start gap-2">
+
+      <div className="w-1/4 flex flex-col items-center justify-start border-l border-gray-300 pl-6 mr-4">
         <QRCode value={`https://example.com/${replaceName}`} size={200} />
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
           Scan to view on mobile
         </p>
       </div>
