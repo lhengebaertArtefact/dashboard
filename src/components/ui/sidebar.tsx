@@ -37,7 +37,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ setPage, terminalName }) => {
   const router = useRouter();
   const handleSelect = (terminal: string) => {
     setPage(terminal);
-    router.push(`/dashboard/${terminal}`);
+    const terminalNameRefacto = terminal.replace(/\s+/g, "");
+    console.log("ter name", terminal);
+    router.push(`/dashboard/${terminalNameRefacto}`);
   };
 
   return (
