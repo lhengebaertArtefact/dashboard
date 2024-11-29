@@ -1,8 +1,14 @@
 "use client";
 import { Sidebar } from "@/components/ui/sidebar";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { InfoCardsProvider } from "@/context/InfoCardsContext";
+import { Store } from "@/models/store.model";
+
+interface Store {
+  _id: string;
+  location: string;
+}
 
 export default function DashboardLayout({
   children,
@@ -67,11 +73,42 @@ export default function DashboardLayout({
   ];
 
   const terminalNames = infosCards.map((item) => item.terminal.name);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean | null>(true);
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      try {
+        const response = await fetch("/api/get-stores");
+        if (!response.ok) {
+          throw new Error("error comes when tried to catch stores");
+        }
+        const data = await response.json();
+        setStores(data.stores || []);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchStores();
+  }, []);
+
+  console.log(stores);
+
+  if (isLoading) {
+    <div>...chargement en cours</div>;
+  }
+
+  if (error) {
+    <div>Erreur : {error}</div>;
+  }
 
   return (
-    <InfoCardsProvider infoCards={infosCards}>
+    <InfoCardsProvider rewards={infosCards}>
       <div className="flex h-screen">
-        <Sidebar setPage={setItem} terminalName={terminalNames} />
+        <Sidebar setPage={setItem} terminalName={stores} />
 
         <main className="flex-1 overflow-y-auto p-6 bg-gray-100">
           {children}

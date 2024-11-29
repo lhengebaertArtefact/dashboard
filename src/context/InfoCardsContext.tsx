@@ -1,24 +1,17 @@
 "use client";
 import React, { createContext, useContext } from "react";
 
-// Typage de chaque terminal
-
-interface TerminalInfo {
-  terminal: {
-    name: string;
-    card1: string;
-    card2: string;
-    card3: string;
-    card4: string;
-  };
+interface RewardsInfo {
+  terminal: string;
+  award: { award: string };
 }
 
-// Typage du contexte
-interface InfoCardsContextType {
-  infoCards: TerminalInfo[];
+interface RewardsContextType {
+  rewards: RewardsInfo[];
+  upgradeRewards: () => void;
 }
 
-const InfoCardsContext = createContext<InfoCardsContextType | null>(null);
+const InfoCardsContext = createContext<RewardsContextType | null>(null);
 
 export const useInfoCards = () => {
   const context = useContext(InfoCardsContext);
@@ -30,13 +23,15 @@ export const useInfoCards = () => {
 
 export const InfoCardsProvider = ({
   children,
-  infoCards,
+  rewards,
+  upgradeRewards,
 }: {
   children: React.ReactNode;
-  infoCards: TerminalInfo[];
+  rewards: RewardsInfo[];
+  upgradeRewards: () => void;
 }) => {
   return (
-    <InfoCardsContext.Provider value={{ infoCards }}>
+    <InfoCardsContext.Provider value={{ rewards, upgradeRewards }}>
       {children}
     </InfoCardsContext.Provider>
   );

@@ -30,7 +30,7 @@ export default function TerminalPage({ params }: TerminalPageProps) {
         <h2 className="ml-4 font-bold">You are now on the {params.slug}</h2>
         <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 gap-6">
           {valuesCards.map((item) => (
-            <Card terminal={item} />
+            <Card key={item} terminal={item} />
           ))}
         </div>
       </div>

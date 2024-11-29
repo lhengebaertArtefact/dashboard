@@ -1,19 +1,13 @@
-import React from "react";
-
-interface infoCardsProps {
-  terminal: string;
+interface CardProps {
+  title: string;
+  count: number;
 }
 
-const Card: React.FC<infoCardsProps> = ({ terminal }) => {
-  if (!terminal) {
-    return <div></div>;
-  }
-
+const Card: React.FC<CardProps> = ({ title, count }) => {
   return (
-    <div className="flex flex-wrap gap-6 px-4 py-6">
-      <div className=" justify-between bg-white shadow-lg rounded-lg border border-gray-300 p-5 w-[300px]">
-        <p className="text-lg font-semibold text-gray-800 mb-4">{terminal}</p>
-      </div>
+    <div className="w-[300px] h-38 border-2 border-black rounded-sm p-3">
+      <h3 className="text-lg font-bold">{title}</h3>
+      <p className="text-sm">Nombre de récompenses : {count}</p>
     </div>
   );
 };

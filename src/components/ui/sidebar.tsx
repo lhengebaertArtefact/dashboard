@@ -7,9 +7,13 @@ import { useEffect, useState } from "react";
 import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 
+interface Store {
+  _id: string;
+  location: string;
+}
 interface SidebarProps {
   setPage: (terminal: string) => void;
-  terminalName: Array<string>;
+  terminalName: Array<Store>;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ setPage, terminalName }) => {
@@ -51,13 +55,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ setPage, terminalName }) => {
         <nav className="flex-1 space-y-2 p-4">
           {terminalName.map((item) => (
             <Button
-              key={item}
+              key={item._id}
               variant="ghost"
               className="w-full justify-start"
-              onClick={() => handleSelect(item)}
+              onClick={() => handleSelect(item.location)}
             >
               <Home className="mr-2 h-4 w-4" />
-              {item}
+              {item.location}
             </Button>
           ))}
 
