@@ -9,7 +9,7 @@ interface KPICardProps {
 
 export function KPICard({ title, value, change, isPositive }: KPICardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm">
+    <div className="bg-white p-6 border border-gray-300 rounded-lg shadow-lg">
       <h3 className="text-sm font-medium text-gray-500 mb-1">{title}</h3>
       <div className="flex items-baseline">
         <p className="text-2xl font-semibold text-gray-900">{value}</p>
