@@ -15,7 +15,7 @@ const header = () => {
         </div>
         <div className="flex items-center space-x-4">
           <button className="flex items-center text-gray-700 hover:text-blue-600">
-            <span className="mr-1">Last 30 days</span>
+            <span className="mr-1 text-lg font-bold">Last 30 days</span>
           </button>
           <button className="text-gray-700 hover:text-blue-600">
             <Calendar className="h-5 w-5" />

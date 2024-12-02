@@ -10,10 +10,10 @@ export default function Home() {
     { id: 3, name: "Award C", value: 3000 },
   ];
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-slate-200">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
       <DashboardGrid>
-        <div className="col-span-3 bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <div className="col-span-3 bg-white p-6 rounded-lg shadow-md border border-gray-200 bg-gradient-to-r from-violet-500 to-fuchsia-500">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <KPICard
               title="Awards trouvés"
