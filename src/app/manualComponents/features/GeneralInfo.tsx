@@ -32,7 +32,7 @@ export function GeneralInfo({
     return <span>Dernière mise à jour: {date}</span>;
   };
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6 border border-gray-300 rounded-lg shadow-md h-full">
       <h2 className="text-xl font-bold mb-4">Terminal {terminalName}</h2>
       <div className="space-y-4">
         <div className="flex justify-between items-center">

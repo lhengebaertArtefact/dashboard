@@ -6,7 +6,7 @@ interface QRCodeCardProps {
 
 export function QRCodeCard({ terminalId }: QRCodeCardProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6  border border-gray-300 rounded-lg shadow-md">
       <h3 className="text-lg font-semibold mb-4">Scanner pour participer</h3>
       <div className="flex flex-col items-center">
         <QRCode value={`https://example.com/${terminalId}`} size={200} />
