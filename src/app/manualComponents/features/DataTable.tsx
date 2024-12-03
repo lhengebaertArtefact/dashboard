@@ -17,8 +17,8 @@ export function DataTable({ data }: DataTableProps) {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {data.map((item) => (
-            <tr key={item.id}>
+          {data.map((item, index) => (
+            <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {item.name}
               </td>
