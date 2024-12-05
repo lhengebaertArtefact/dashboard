@@ -10,13 +10,15 @@ import { useRouter } from "next/navigation";
 interface Store {
   _id: string;
   location: string;
+  utm_source: string;
+  utm_term: string;
 }
 interface SidebarProps {
-  setPage: (terminal: string) => void;
+  setItem: (newItem: string[] | ((prev: string[]) => string[])) => void;
   terminalName: Array<Store>;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ setPage, terminalName }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ setItem, terminalName }) => {
   // const [stores, setStores] = useState<{ _id: string; location: string }[]>([]);
 
   // useEffect(() => {
@@ -39,10 +41,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ setPage, terminalName }) => {
   // }, []);
 
   const router = useRouter();
-  const handleSelect = (terminal: string) => {
-    setPage(terminal);
+  const handleSelect = (terminal: string, source: string, term: string) => {
+    setItem([source, term]); // Remplacer le tableau au lieu d'ajouter
     const terminalNameRefacto = terminal.replace(/\s+/g, "");
-    console.log("ter name", terminal);
     router.push(`/${terminalNameRefacto}`);
   };
 
@@ -58,7 +59,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ setPage, terminalName }) => {
               key={item._id}
               variant="ghost"
               className="w-full justify-start"
-              onClick={() => handleSelect(item.location)}
+              onClick={() =>
+                handleSelect(item.location, item.utm_source, item.utm_term)
+              }
             >
               <Home className="mr-2 h-4 w-4" />
               {item.location}

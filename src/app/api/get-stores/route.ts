@@ -7,7 +7,6 @@ export async function GET() {
     await connectToDatabase();
 
     const stores = await Store.find({});
-    console.log("Stores fetched:", stores);
 
     if (!stores || stores.length === 0) {
       return NextResponse.json(

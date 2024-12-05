@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/ui/sidebar";
 import { Store } from "@/models/store.model";
 import Header from "./manualComponents/header/Header";
+import useStore from "@/store/useStore";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,6 +27,8 @@ const geistMono = localFont({
 interface Store {
   _id: string;
   location: string;
+  utm_source: string;
+  utm_term: string;
 }
 
 export default function RootLayout({
@@ -33,62 +36,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [item, setItem] = useState<string>();
-
-  const infosCards = [
-    {
-      terminal: {
-        name: "Terminal 1",
-        card1:
-          "Bonjour, voici les informations concernant le Terminal 1. Ceci est la première card",
-        card2:
-          "Bonjour, voici les informations concernant le Terminal 1. Ceci est la seconde card",
-        card3:
-          "Bonjour, voici les informations concernant le Terminal 1. Ceci est la troisième card",
-        card4:
-          "Bonjour, voici les informations concernant le Terminal 1. Ceci est la quatrième card",
-      },
-    },
-    {
-      terminal: {
-        name: "Terminal 2",
-        card1:
-          "Bonjour, voici les informations concernant le Terminal 2. Ceci est la première card",
-        card2:
-          "Bonjour, voici les informations concernant le Terminal 2. Ceci est la seconde card",
-        card3:
-          "Bonjour, voici les informations concernant le Terminal 2. Ceci est la troisième card",
-        card4:
-          "Bonjour, voici les informations concernant le Terminal 2. Ceci est la quatrième card",
-      },
-    },
-    {
-      terminal: {
-        name: "Terminal 3",
-        card1:
-          "Bonjour, voici les informations concernant le Terminal 3. Ceci est la première card",
-        card2:
-          "Bonjour, voici les informations concernant le Terminal 3. Ceci est la seconde card",
-        card3:
-          "Bonjour, voici les informations concernant le Terminal 3. Ceci est la troisième card",
-        card4:
-          "Bonjour, voici les informations concernant le Terminal 3. Ceci est la quatrième card",
-      },
-    },
-    {
-      terminal: {
-        name: "Terminal 4",
-        card1:
-          "Bonjour, voici les informations concernant le Terminal 4. Ceci est la première card",
-        card2:
-          "Bonjour, voici les informations concernant le Terminal 4. Ceci est la seconde card",
-        card3:
-          "Bonjour, voici les informations concernant le Terminal 4. Ceci est la troisième card",
-        card4:
-          "Bonjour, voici les informations concernant le Terminal 4. Ceci est la quatrième card",
-      },
-    },
-  ];
+  const { item, setItem } = useStore();
 
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean | null>(true);
@@ -101,7 +49,6 @@ export default function RootLayout({
     <div>Erreur : {error}</div>;
   }
 
-  const terminalNames = infosCards.map((item) => item.terminal.name);
   const [stores, setStores] = useState<Store[]>([]);
 
   useEffect(() => {
@@ -131,7 +78,7 @@ export default function RootLayout({
       >
         <Header />
         <div className="flex">
-          <Sidebar setPage={setItem} terminalName={stores} />
+          <Sidebar setItem={setItem} terminalName={stores} />
           {children}
         </div>
       </body>

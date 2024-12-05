@@ -3,7 +3,7 @@ import { ArrowUp, ArrowDown } from "lucide-react";
 interface KPICardProps {
   title: string;
   value: string;
-  change: number;
+  change: string;
   isPositive: boolean;
 }
 
