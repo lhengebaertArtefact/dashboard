@@ -54,21 +54,9 @@ export default function TerminalPage({ params }: PageProps) {
       setLoading(false);
     }
   };
-  const formatTerminalParams = (params: string) => {
-    return params.replace(/-/g, " - ");
-  };
 
   useEffect(() => {
-    const getAdjustedSource = (originalSource: string) => {
-      if (originalSource === "FB") {
-        return "EFB";
-      } else if (originalSource.endsWith("EL")) {
-        return "EL";
-      }
-      return originalSource;
-    };
-
-    const source = getAdjustedSource(item[0]);
+    const source = item[0];
     const term = item[1];
 
     fetchStats(term, source);
@@ -85,6 +73,9 @@ export default function TerminalPage({ params }: PageProps) {
     value: reward.count,
   }));
 
+  const source = item[0];
+  const term = item[1];
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex gap-6 mb-6">
@@ -99,7 +90,7 @@ export default function TerminalPage({ params }: PageProps) {
         </div>
 
         <div className="w-1/3">
-          <QRCodeCard terminalId={stats.terminalId} />
+          <QRCodeCard terminalId={term} storeSource={source} />
         </div>
       </div>
 

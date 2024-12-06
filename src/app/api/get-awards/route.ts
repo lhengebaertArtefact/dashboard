@@ -35,15 +35,33 @@ export async function POST(req: Request) {
     const collections = await mongoose.connection.db
       .listCollections()
       .toArray();
+    console.log("mes collections ", collections);
     const awardCollections = collections
       .map((col) => col.name)
-      .filter((name) => name.startsWith(utm_source));
+      .filter((name) =>
+        name.startsWith(
+          utm_source === "RELAY"
+            ? utm_source.charAt(0) + utm_source.slice(1).toLowerCase()
+            : utm_source.startsWith("FB")
+            ? "EFB"
+            : utm_source.startsWith("EL")
+            ? "EL"
+            : utm_source
+        )
+      );
 
     console.log("📚 Collections trouvées:", awardCollections);
+    console.log(
+      "collection renamed",
+      utm_source.charAt(0) + utm_source.slice(1).toLowerCase()
+    );
 
     const stats = {
       terminalId: utm_term,
-      storeSource: utm_source,
+      storeSource:
+        utm_source === "RELAY"
+          ? utm_source.charAt(0) + utm_source.slice(1).toLowerCase()
+          : utm_source,
       totalTickets: 0,
       foundTickets: 0,
       totalParticipants: 0,
