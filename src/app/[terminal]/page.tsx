@@ -67,10 +67,20 @@ export default function TerminalPage({ params }: PageProps) {
   if (error) return <div>Erreur: {error}</div>;
   if (!stats) return <div>Aucune donnée disponible</div>;
 
-  const dataTableData = stats.rewards.map((reward, index) => ({
+  const extractAwardName = (name: string) => {
+    const match = name.match(/(\d+)|Sucette/);
+    return match
+      ? match[0] === "Sucette"
+        ? "Sucette"
+        : `-${match[0]}%`
+      : name;
+  };
+
+  const dataTableData = stats.collectionsFromSource.map((reward, index) => ({
     id: index + 1,
-    name: reward.type,
-    value: reward.count,
+    name: extractAwardName(reward),
+    totalTickets: 0,
+    foundTickets: 0,
   }));
 
   const source = item[0];
@@ -100,15 +110,6 @@ export default function TerminalPage({ params }: PageProps) {
             <h3 className="text-lg font-semibold mb-4">Liste des awards</h3>
 
             {stats.collectionsFromSource.map((award: string) => {
-              const extractAwardName = (name: string) => {
-                const match = name.match(/(\d+)|Sucette/);
-                return match
-                  ? match[0] === "Sucette"
-                    ? "Sucette"
-                    : `-${match[0]}%`
-                  : name;
-              };
-
               return (
                 <div key={award}>
                   <h3 className="text-lg font-semibold mb-4 p-6 rounded-lg shadow-md border border-gray-300">

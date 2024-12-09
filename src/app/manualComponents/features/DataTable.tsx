@@ -1,34 +1,33 @@
+import React from "react";
+
 interface DataTableProps {
-  data: Array<{ id: number; name: string; value: number }>;
+  data: Array<{
+    id: number;
+    name: string;
+    totalTickets: number;
+    foundTickets: number;
+  }>;
 }
 
 export function DataTable({ data }: DataTableProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Value
-            </th>
+    <table className="min-w-full bg-white border border-gray-300">
+      <thead>
+        <tr>
+          <th className="py-2 px-4 border-b">Nom de l'award</th>
+          <th className="py-2 px-4 border-b">Total des tickets</th>
+          <th className="py-2 px-4 border-b">Tickets trouvés</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row) => (
+          <tr key={row.id} className="hover:bg-gray-100">
+            <td className="border px-4 py-2">{row.name}</td>
+            <td className="border px-4 py-2">{row.totalTickets}</td>
+            <td className="border px-4 py-2">{row.foundTickets}</td>
           </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {item.name}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {item.value}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
 }
