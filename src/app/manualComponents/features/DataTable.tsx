@@ -14,11 +14,9 @@ export function DataTable({ data }: DataTableProps) {
     <div className="group relative h-full">
       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-2xl blur transition-all duration-300 group-hover:scale-105"></div>
       <div className="relative h-full backdrop-blur-xl bg-white/10 rounded-2xl border border-white/10 overflow-hidden">
-        {/* Decorative orbs */}
         <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full blur-xl"></div>
         <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-gradient-to-tr from-blue-500/20 to-purple-500/20 rounded-full blur-xl"></div>
 
-        {/* Content */}
         <div className="relative z-10 overflow-x-auto">
           <table className="w-full">
             <thead>

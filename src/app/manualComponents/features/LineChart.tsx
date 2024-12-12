@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import useStore from "@/store/useStore";
+// import useStore from "@/store/useStore";
 
 ChartJS.register(
   CategoryScale,
@@ -62,86 +62,86 @@ const options = {
   },
 };
 
-export function LineChart() {
-  const [awardData, setAwardData] = useState<{ [key: string]: number[] }>({});
-  const [error, setError] = useState<string | null>(null);
-  const { item } = useStore();
+// export function LineChart() {
+//   const [awardData, setAwardData] = useState<{ [key: string]: number[] }>({});
+//   const [error, setError] = useState<string | null>(null);
+//   const { item } = useStore();
 
-  useEffect(() => {
-    const fetchAwardData = async () => {
-      try {
-        const source = item[0];
-        const term = item[1];
+//   useEffect(() => {
+//     const fetchAwardData = async () => {
+//       try {
+//         const source = item[0];
+//         const term = item[1];
 
-        const response = await fetch("/api/get-awards", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ utm_term: term, utm_source: source }),
-        });
+//         const response = await fetch("/api/get-awards", {
+//           method: "POST",
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//           body: JSON.stringify({ utm_term: term, utm_source: source }),
+//         });
 
-        if (!response.ok) {
-          throw new Error("Erreur lors de la récupération des données");
-        }
-        const data = await response.json();
+//         if (!response.ok) {
+//           throw new Error("Erreur lors de la récupération des données");
+//         }
+//         const data = await response.json();
 
-        const awardDataByCollection: { [key: string]: number[] } = {};
-        data.stats.collectionsFromSource.forEach((collection: string) => {
-          const collectionName = extractAwardName(collection);
-          if (!awardDataByCollection[collectionName]) {
-            awardDataByCollection[collectionName] = [];
-          }
-          const foundTickets =
-            data.stats.rewards.find(
-              (reward: any) => reward.type === collectionName
-            )?.found || 0;
-          awardDataByCollection[collectionName].push(foundTickets);
-        });
+//         const awardDataByCollection: { [key: string]: number[] } = {};
+//         data.stats.collectionsFromSource.forEach((collection: string) => {
+//           const collectionName = extractAwardName(collection);
+//           if (!awardDataByCollection[collectionName]) {
+//             awardDataByCollection[collectionName] = [];
+//           }
+//           const foundTickets =
+//             data.stats.rewards.find(
+//               (reward: any) => reward.type === collectionName
+//             )?.found || 0;
+//           awardDataByCollection[collectionName].push(foundTickets);
+//         });
 
-        setAwardData(awardDataByCollection);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Une erreur est survenue"
-        );
-      }
-    };
+//         setAwardData(awardDataByCollection);
+//       } catch (err) {
+//         setError(
+//           err instanceof Error ? err.message : "Une erreur est survenue"
+//         );
+//       }
+//     };
 
-    fetchAwardData();
-  }, [item]);
+//     fetchAwardData();
+//   }, [item]);
 
-  const extractAwardName = (name: string) => {
-    const match = name.match(/(\d+)|Sucette/);
-    return match
-      ? match[0] === "Sucette"
-        ? "Sucette"
-        : `-${match[0]}%`
-      : name;
-  };
+//   const extractAwardName = (name: string) => {
+//     const match = name.match(/(\d+)|Sucette/);
+//     return match
+//       ? match[0] === "Sucette"
+//         ? "Sucette"
+//         : `-${match[0]}%`
+//       : name;
+//   };
 
-  const data = {
-    labels: getLast7Days(),
-    datasets: Object.keys(awardData).map((collectionName, index) => ({
-      label: collectionName,
-      data: awardData[collectionName],
-      borderColor: `hsl(${index * 60}, 70%, 50%)`,
-      backgroundColor: `hsla(${index * 60}, 70%, 50%, 0.2)`,
-      tension: 0.3,
-      pointBackgroundColor: `hsl(${index * 60}, 70%, 50%)`,
-      pointBorderColor: "#ffffff",
-      pointBorderWidth: 2,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-    })),
-  };
+//   const data = {
+//     labels: getLast7Days(),
+//     datasets: Object.keys(awardData).map((collectionName, index) => ({
+//       label: collectionName,
+//       data: awardData[collectionName],
+//       borderColor: `hsl(${index * 60}, 70%, 50%)`,
+//       backgroundColor: `hsla(${index * 60}, 70%, 50%, 0.2)`,
+//       tension: 0.3,
+//       pointBackgroundColor: `hsl(${index * 60}, 70%, 50%)`,
+//       pointBorderColor: "#ffffff",
+//       pointBorderWidth: 2,
+//       pointRadius: 4,
+//       pointHoverRadius: 6,
+//     })),
+//   };
 
-  if (error) {
-    return <div>Erreur: {error}</div>;
-  }
+//   if (error) {
+//     return <div>Erreur: {error}</div>;
+//   }
 
-  return (
-    <div className="bg-white p-6 rounded-xl shadow-md">
-      <Line options={options} data={data} />
-    </div>
-  );
-}
+//   return (
+//     <div className="bg-white p-6 rounded-xl shadow-md">
+//       <Line options={options} data={data} />
+//     </div>
+//   );
+// }
