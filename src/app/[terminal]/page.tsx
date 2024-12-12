@@ -1,147 +1,77 @@
 "use client";
-import { useState, useEffect } from "react";
+
 import { DashboardGrid } from "../manualComponents/dashboardGrid/DashbordGrid";
 import { KPICard } from "../manualComponents/features/KPICard";
 import { GeneralInfo } from "../manualComponents/features/GeneralInfo";
 import { QRCodeCard } from "../manualComponents/features/QRCodeCard";
 import { DataTable } from "../manualComponents/features/DataTable";
-import { LineChart } from "../manualComponents/features/LineChart";
-import useStore from "@/store/useStore";
+import { useStore } from "@/store/useStore";
 
-interface Stats {
-  terminalId: string;
-  storeSource: string;
-  totalTickets: number;
-  foundTickets: number;
-  totalParticipants: number;
-  rewards: Array<{ type: string; count: number; found: number }>;
-  collectionsFromSource: string[];
-}
+export default function TerminalPage() {
+  const { item, selectedStore } = useStore();
+  const [source, term] = item;
 
-interface PageProps {
-  params: {
-    terminal: string;
-  };
-}
+  console.log("store = ", selectedStore);
 
-export default function TerminalPage({ params }: PageProps) {
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { item } = useStore();
-
-  const terminalParams = params.terminal;
-
-  const fetchStats = async (utm_term: string, utm_source: string) => {
-    try {
-      const response = await fetch("/api/get-awards", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ utm_term, utm_source }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de la récupération des données");
-      }
-
-      const data = await response.json();
-      setStats(data.stats);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Une erreur est survenue");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const source = item[0];
-    const term = item[1];
-
-    fetchStats(term, source);
-    console.log("mon term ", term);
-  }, [terminalParams, item]);
-
-  if (loading) return <div>Chargement...</div>;
-  if (error) return <div>Erreur: {error}</div>;
-  if (!stats) return <div>Aucune donnée disponible</div>;
-
-  const extractAwardName = (name: string) => {
-    const match = name.match(/(\d+)|Sucette/);
-    return match
-      ? match[0] === "Sucette"
-        ? "Sucette"
-        : `-${match[0]}%`
-      : name;
-  };
-
-  const dataTableData = stats.collectionsFromSource.map((reward, index) => ({
-    id: index + 1,
-    name: extractAwardName(reward),
-    totalTickets: 0,
-    foundTickets: 0,
-  }));
-
-  const source = item[0];
-  const term = item[1];
+  if (!selectedStore) return <div>Aucune donnée disponible</div>;
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex gap-6 mb-6">
-        <div className="w-2/3">
+    <div className="w-full min-h-screen p-4 md:p-6 lg:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 mb-8">
+        <div className="lg:col-span-2">
           <GeneralInfo
-            terminalName={stats.terminalId}
-            storeSource={stats.storeSource}
-            totalTickets={stats.totalTickets}
-            foundTickets={stats.foundTickets}
-            totalParticipants={stats.totalParticipants}
+            terminalName={selectedStore.location}
+            storeSource={selectedStore.utm_source}
+            utmTerm={selectedStore.utm_term}
+            totalTickets={selectedStore.config.reduce(
+              (acc, gift) => acc + (Number(gift.nb_gift_projected) || 0),
+              0
+            )}
+            foundTickets={selectedStore.config.reduce(
+              (acc, gift) => acc + (Number(gift.nb_gift_find) || 0),
+              0
+            )}
+            totalParticipants={0}
           />
         </div>
-
-        <div className="w-1/3">
+        <div className="lg:col-span-1">
           <QRCodeCard terminalId={term} storeSource={source} />
         </div>
       </div>
 
-      <DashboardGrid>
-        <div className="col-span-3 space-y-6 bg-white p-6 rounded-lg shadow-md border border-gray-300">
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Liste des awards</h3>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+        <div className="xl:col-span-2 order-2 xl:order-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+            {selectedStore.config.map((gift, index) => {
+              const total = Number(gift.nb_gift_projected);
+              const found = Number(gift.nb_gift_find);
+              const remaining = total - found;
 
-            {stats.collectionsFromSource.map((award: string) => {
               return (
-                <div key={award}>
-                  <h3 className="text-lg font-semibold mb-4 p-6 rounded-lg shadow-md border border-gray-300">
-                    {extractAwardName(award)}
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-                    {stats.rewards.map((reward, index) => (
-                      <KPICard
-                        key={index}
-                        title={reward.type}
-                        value={reward.count.toString()}
-                        change={((reward.found / reward.count) * 100).toFixed(
-                          1
-                        )}
-                        isPositive={reward.found > 0}
-                      />
-                    ))}
-                  </div>
-                </div>
+                <KPICard
+                  key={index}
+                  title={`${gift.gift}`}
+                  probability={`${gift.min}% - ${gift.max}%`}
+                  found_Tickets={found}
+                  isPositive={found > 0}
+                  percentage_Found_Tickets={((found / total) * 100).toFixed(1)}
+                  remaining_tickets={`${remaining}/${total}`}
+                />
               );
             })}
           </div>
         </div>
-
-        <div className="col-span-2">
-          <LineChart />
+        <div className="xl:col-span-1 order-1 xl:order-2">
+          <DataTable
+            data={selectedStore.config.map((gift, index) => ({
+              id: index + 1,
+              name: String(gift.gift),
+              totalTickets: Number(gift.nb_gift_projected),
+              foundTickets: Number(gift.nb_gift_find),
+            }))}
+          />
         </div>
-
-        <div className="col-span-2">
-          <DataTable data={dataTableData} />
-        </div>
-      </DashboardGrid>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const awardSchema = new mongoose.Schema(
   {
-    qrcode: { type: String, required: true },
     num_code: { type: String, required: true },
     award: { type: String, required: true },
     store: { type: String, required: true },

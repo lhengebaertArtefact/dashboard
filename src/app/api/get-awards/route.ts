@@ -7,8 +7,6 @@ import mongoose from "mongoose";
 export async function POST(req: Request) {
   try {
     const { utm_term, utm_source } = await req.json();
-    console.log(" utm_term reçue:", utm_term);
-    console.log("🏪 UTM Source reçu:", utm_source);
 
     if (!utm_term || !utm_source) {
       return NextResponse.json({
@@ -20,6 +18,7 @@ export async function POST(req: Request) {
 
     await connectToDatabase();
 
+    // 1. Récupérer le store et sa configuration
     const store = await Store.findOne({ utm_term, utm_source });
     if (!store) {
       return NextResponse.json(
@@ -28,77 +27,67 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!mongoose.connection.db) {
-      return "connexion impossible";
-    }
-
-    const collections = await mongoose.connection.db
-      .listCollections()
-      .toArray();
-    console.log("mes collections ", collections);
-    const awardCollections = collections
-      .map((col) => col.name)
-      .filter((name) =>
-        name.startsWith(
-          utm_source === "RELAY"
-            ? utm_source.charAt(0) + utm_source.slice(1).toLowerCase()
-            : utm_source.startsWith("FB")
-            ? "EFB"
-            : utm_source.startsWith("EL")
-            ? "EL"
-            : utm_source
-        )
-      );
-
-    console.log("📚 Collections trouvées:", awardCollections);
-    console.log(
-      "collection renamed",
-      utm_source.charAt(0) + utm_source.slice(1).toLowerCase()
-    );
-
+    // 2. Préparer les statistiques de base
     const stats = {
-      terminalId: utm_term,
-      storeSource:
-        utm_source === "RELAY"
-          ? utm_source.charAt(0) + utm_source.slice(1).toLowerCase()
-          : utm_source,
+      terminalId: store.utm_term,
+      storeSource: store.utm_source,
+      location: store.location,
       totalTickets: 0,
       foundTickets: 0,
       totalParticipants: 0,
-      rewards: [] as Array<{ type: string; count: number; found: number }>,
-      collectionsFromSource: awardCollections,
+      rewards: [] as Array<{
+        type: string;
+        count: number;
+        found: number;
+        projected: number;
+        range: string;
+      }>,
     };
 
-    for (const collectionName of awardCollections) {
+    // 3. Pour chaque configuration de gift dans le store
+    for (const giftConfig of store.config) {
+      const giftName = giftConfig.gift;
+      const collectionName = `${utm_source}_${giftName}`.toUpperCase();
+
       const AwardModel = getAwardModel(collectionName);
 
-      const totalAwardsInCollection = await AwardModel.countDocuments({});
-
-      const awards = await AwardModel.find({
-        utm_source: utm_source,
+      // Compter les awards trouvés pour ce type de gift
+      const totalAwards = await AwardModel.countDocuments({
+        utm_source,
+        utm_term,
       });
 
-      stats.totalTickets += totalAwardsInCollection;
+      const foundAwards = await AwardModel.countDocuments({
+        utm_source,
+        utm_term,
+        isFind: true,
+      });
 
-      if (awards.length > 0) {
-        const foundTickets = awards.filter((a) => a.isFind).length;
-        const participants = new Set(
-          awards.filter((a) => a.user !== null).map((a) => a.user?.toString())
-        ).size;
+      // Ajouter aux statistiques
+      stats.totalTickets += totalAwards;
+      stats.foundTickets += foundAwards;
 
-        stats.foundTickets += foundTickets;
-        stats.totalParticipants += participants;
-
-        const rewardType = collectionName.replace(utm_source, "");
-        stats.rewards.push({
-          type: rewardType,
-          count: totalAwardsInCollection,
-          found: foundTickets,
-        });
-      }
+      stats.rewards.push({
+        type: giftName,
+        count: totalAwards,
+        found: foundAwards,
+        projected: giftConfig.nb_gift_projected,
+        range: `${giftConfig.min}€ - ${giftConfig.max}€`,
+      });
     }
 
-    console.log("📊 Statistiques générées:", stats);
+    // 4. Calculer le nombre total de participants uniques
+    const baseCollectionName =
+      `${utm_source}_${store.config[0].gift}`.toUpperCase();
+    const uniqueParticipants = await getAwardModel(baseCollectionName).distinct(
+      "user",
+      {
+        utm_source,
+        utm_term,
+        user: { $ne: null },
+      }
+    );
+    stats.totalParticipants = uniqueParticipants.length;
 
     return NextResponse.json({
       success: true,

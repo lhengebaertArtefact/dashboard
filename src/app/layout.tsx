@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/ui/sidebar";
 import { Store } from "@/models/store.model";
 import Header from "./manualComponents/header/Header";
-import useStore from "@/store/useStore";
+import { useStore } from "@/store/useStore";
+import mongoose from "mongoose";
+import type { StoreDocument } from "@/store/useStore";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -49,17 +51,15 @@ export default function RootLayout({
     <div>Erreur : {error}</div>;
   }
 
-  const [stores, setStores] = useState<Store[]>([]);
+  const [stores, setStores] = useState<StoreDocument[]>([]);
 
   useEffect(() => {
     const fetchStores = async () => {
       try {
         const response = await fetch("/api/get-stores");
-        if (!response.ok) {
-          throw new Error("error comes when tried to catch stores");
-        }
+        if (!response.ok) throw new Error("error fetching stores");
         const data = await response.json();
-        setStores(data.stores || []);
+        setStores(data.stores as StoreDocument[]);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -77,7 +77,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <div className="flex">
+        <div className="flex justify-around">
           <Sidebar setItem={setItem} terminalName={stores} />
           {children}
         </div>

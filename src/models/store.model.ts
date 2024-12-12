@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 
 const configSchema = new mongoose.Schema({
-  name: String,
-  value: String,
-  description: String,
-  isActive: Boolean,
-  order: Number,
+  min: Number,
+  max: Number,
+  gift: String,
+  nb_gift_projected: Number,
+  nb_gift_max: Number,
+  nb_gift_find: Number,
+  next: Number,
 });
 
 const storeSchema = new mongoose.Schema({

@@ -1,16 +1,34 @@
+import { Store } from "@/models/store.model";
+import mongoose from "mongoose";
 import { create } from "zustand";
+
+export type StoreDocument = {
+  _id: string;
+  utm_source: string;
+  utm_term: string;
+  location: string;
+  config: Array<{
+    min: Number;
+    max: Number;
+    gift: String;
+    nb_gift_projected: Number;
+    nb_gift_max: Number;
+    nb_gift_find: Number;
+    next: Number;
+  }>;
+  users: mongoose.Types.ObjectId[];
+} & mongoose.Document;
 
 interface StoreState {
   item: string[];
-  setItem: (newItem: string[] | ((prev: string[]) => string[])) => void;
+  selectedStore: StoreDocument | null;
+  setItem: (newItem: string[]) => void;
+  setSelectedStore: (store: StoreDocument) => void;
 }
 
-const useStore = create<StoreState>((set) => ({
+export const useStore = create<StoreState>((set) => ({
   item: [],
-  setItem: (newItem) =>
-    set((state) => ({
-      item: typeof newItem === "function" ? newItem(state.item) : newItem,
-    })),
+  selectedStore: null,
+  setItem: (newItem) => set({ item: newItem }),
+  setSelectedStore: (store) => set({ selectedStore: store }),
 }));
-
-export default useStore;
