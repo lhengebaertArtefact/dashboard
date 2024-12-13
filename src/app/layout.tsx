@@ -1,4 +1,3 @@
-"use client";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -33,43 +32,36 @@ interface Store {
   utm_term: string;
 }
 
-export default function RootLayout({
+async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { item, setItem } = useStore();
+  const storesResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/get-stores`,
+    {
+      method: "GET",
+      cache: "no-store",
+    }
+  );
+  const { stores } = await storesResponse.json();
 
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean | null>(true);
+  const storesBasicInfo = stores.map(
+    (store: { location: string; utm_source: string; utm_term: string }) => ({
+      location: store.location,
+      utm_source: store.utm_source,
+      utm_term: store.utm_term,
+    })
+  );
 
-  if (isLoading) {
-    <div>...chargement en cours</div>;
-  }
-
-  if (error) {
-    <div>Erreur : {error}</div>;
-  }
-
-  const [stores, setStores] = useState<StoreDocument[]>([]);
-
-  useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        const response = await fetch("/api/get-stores");
-        if (!response.ok) throw new Error("error fetching stores");
-        const data = await response.json();
-        setStores(data.stores as StoreDocument[]);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchStores();
-  }, []);
-
-  console.log(stores);
+  const collectionsResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/get-collections-ticketslist`,
+    {
+      method: "GET",
+      cache: "no-store",
+    }
+  );
+  const { collections } = await collectionsResponse.json();
 
   return (
     <html lang="en">
@@ -77,11 +69,21 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <div className="flex justify-around">
-          <Sidebar setItem={setItem} terminalName={stores} />
-          {children}
+        <div className="flex">
+          <Sidebar stores={storesBasicInfo} collectionsTickets={collections} />
+          <main className="flex-1 min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+            <div className="min-h-screen backdrop-blur-sm bg-black/20">
+              <div className="relative min-h-screen overflow-x-hidden">
+                <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+                {children}
+              </div>
+            </div>
+          </main>
         </div>
       </body>
     </html>
   );
 }
+
+export default RootLayout;
