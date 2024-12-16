@@ -1,8 +1,8 @@
-import { KPICard } from "../manualComponents/features/KPICard";
-import { GeneralInfo } from "../manualComponents/features/GeneralInfo";
-import { QRCodeCard } from "../manualComponents/features/QRCodeCard";
-import { DataTable } from "../manualComponents/features/DataTable";
-import { KPICardTickets } from "../manualComponents/features/KPICardTickets";
+import { KPICard } from "../../components/features/KPICard";
+import { GeneralInfo } from "../../components/features/GeneralInfo";
+import { QRCodeCard } from "../../components/features/QRCodeCard";
+import { DataTable } from "../../components/features/DataTable";
+import { KPICardTickets } from "../../components/features/KPICardTickets";
 import { notFound } from "next/navigation";
 
 export default async function Terminal({
@@ -172,6 +172,6 @@ export default async function Terminal({
       );
     }
   } catch (error) {
-    throw error; // Next.js affichera error.tsx
+    throw error;
   }
 }

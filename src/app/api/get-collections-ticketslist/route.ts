@@ -23,7 +23,7 @@ export async function GET() {
         if (collection.startsWith("EDFP")) return "EDFP";
         if (collection.startsWith("EL")) return "EL";
         if (collection.startsWith("Relay")) return "Relay";
-        if (collection.startsWith("EFB")) return "EFB";
+        if (collection.startsWith("EFB")) return;
         if (collection.startsWith("DE")) return "Degustation";
         if (collection.startsWith("MODE")) return "mode";
       })

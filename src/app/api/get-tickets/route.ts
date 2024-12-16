@@ -18,14 +18,12 @@ export async function POST(request: Request) {
       .map((col: { name: string }) => col.name)
       .filter((name: string) => name.startsWith(collectionPrefix));
 
-    // Agrégation des données par collection
     const collectionsData = await Promise.all(
       matchingCollections.map(async (collectionName) => {
         const model = getAwardModel(collectionName);
         const totalTickets = await model.countDocuments();
         const awards = await model.find({ isFind: true });
 
-        // Récupération des locations et utm_sources uniques où des tickets ont été trouvés
         const locationsWithFinds = Array.from(
           new Set(awards.map((award) => award.location))
         );
