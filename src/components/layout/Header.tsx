@@ -3,7 +3,7 @@ import { Search, ChevronDown, Calendar, User } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="relative z-20 backdrop-blur-xl bg-slate-900/80 border-b border-white/10">
+    <header className="relative z-20 backdrop-blur-xl bg-slate-900/80 border-b border-white/10 sticky top-0 z-50">
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
 
       <div className="px-6 py-4 flex items-center justify-between">
